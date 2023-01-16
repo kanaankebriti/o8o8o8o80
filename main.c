@@ -4,8 +4,8 @@
 #include <string.h>
 #include <conio.h>
 
-#define CLERK_ID	"a"
-#define CLERK_PSWD	"a"
+#define CLERK_ID	"Admin"
+#define CLERK_PSWD	"Admin"
 
 // function prototyps
 void clerk_main();
