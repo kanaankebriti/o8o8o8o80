@@ -128,7 +128,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clerk.c" />
+    <ClCompile Include="doc.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="pat.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

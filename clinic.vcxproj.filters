@@ -21,5 +21,11 @@
     <ClCompile Include="clerk.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="doc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
