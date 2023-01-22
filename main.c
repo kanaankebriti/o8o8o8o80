@@ -3,61 +3,65 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
-
-#define CLERK_ID			"Admin"
-#define CLERK_PSWD			"Admin"
-#define USERS_DB_NAME		"usersdb.csv"
-#define USERSDB_TYPE_DOC	"doc"
-#define USERSDB_TYPE_PAT	"pat"
-#define MAX_ID_STR_LEN		"15"
-#define USER_IS_DOC			1
-#define USER_IS_PAT			2
-#define USER_IS_NAN			3
-#define MAX_ID_LEN			15
+#include "defs.h"
 
 // function prototyps
 void clerk_main();
 void doc_main();
 void pat_main();
 
-// Users CSV Scheme
-// id, password, type (USERSDB_TYPE_DOC or USERSDB_TYPE_PAT)
-
 char is_user_in_db(char* user, char* password)
 {
+	// variables
+	unsigned int key;				// unique attributed key. docs: 1 < key < 50 & pats: 1 < key < 800
 	char usrnm[MAX_ID_LEN] = { 0 };	// username
 	char pswd[MAX_ID_LEN] = { 0 };	// password
 	char usrtyp[MAX_ID_LEN] = { 0 };// account's type
-	FILE* usersdb;					// users database file pointer
+	FILE* dbfile;					// users database file pointer
 
-	// try to open users database
-	usersdb = fopen(USERS_DB_NAME, "r");
-	if (!usersdb) // if unavailable
+	// search doctors database
+	dbfile = fopen(DOCS_DB_NAME, "r");
+	if (!dbfile) // if unavailable
 		return USER_IS_NAN;
 	else
-		while (fscanf(usersdb, "%"MAX_ID_STR_LEN"[^,],%"MAX_ID_STR_LEN"[^,],%"MAX_ID_STR_LEN"[^\n]\n", usrnm, pswd, usrtyp) != EOF)
+		for (key = 1; key <= MAX_NUM_OF_DOCS; key++)
 		{
+			// retrive id. skip first vale (key).
+			fscanf(dbfile, "%*[^,],%" MAX_ID_STR_LEN "[^,],%" MAX_ID_STR_LEN "[^,],%*[^\n]", usrnm, pswd);
+
+			// skip free rooms
+			if (!strcmp(usrnm, "0"))
+				continue;
+
 			if (!strcmp(user, usrnm) && !strcmp(password, pswd))
 			{
-				if (!strcmp(usrtyp, USERSDB_TYPE_DOC))
-				{
-					fclose(usersdb);
-					return USER_IS_DOC;
-				}
-				else if (!strcmp(usrtyp, USERSDB_TYPE_PAT))
-				{
-					fclose(usersdb);
-					return USER_IS_PAT;
-				}
-				else
-				{
-					fclose(usersdb);
-					return USER_IS_NAN;
-				}
+				fclose(dbfile);
+				return USER_IS_DOC;
 			}
 		}
 
-	fclose(usersdb);
+	// search patients database
+	dbfile = fopen(PATS_DB_NAME, "r");
+	if (!dbfile) // if unavailable
+		return USER_IS_NAN;
+	else
+		for (key = 1; key <= MAX_NUM_OF_PATS; key++)
+		{
+			// retrive id. skip first vale (key).
+			fscanf(dbfile, "%*[^,],%" MAX_ID_STR_LEN "[^,],%" MAX_ID_STR_LEN "[^,],%*[^\n]", usrnm, pswd);
+
+			// skip free rooms
+			if (!strcmp(usrnm, "0"))
+				continue;
+
+			if (!strcmp(user, usrnm) && !strcmp(password, pswd))
+			{
+				fclose(dbfile);
+				return USER_IS_PAT;
+			}
+		}
+
+	fclose(dbfile);
 	return USER_IS_NAN;
 }
 
